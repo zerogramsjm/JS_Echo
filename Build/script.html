@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+  <img class="icon" src="http://images.clipartpanda.com/apple-clipart-apple5.png" width="80" height="60" alt="Guitars"> 
+
+  <img class="icon" src="http://www.granini.com/data/images/fruit_images/full/banana.png" width="80" height="60" alt="Control Room"> 
+  <br> 
+
+  <img id="main" src="http://images.clipartpanda.com/apple-clipart-apple5.png" width="400" height="300">
+   
+</body>
+</html>
+
+<script type="text/javascript">
+var icons = document.getElementsByClassName("icon");
+
+for(var i=0; i<icons.length; i++) {
+	icons[i].onclick = function(){
+    	document.getElementById("main").src = this.src;
+    }
+}
+</script>
+

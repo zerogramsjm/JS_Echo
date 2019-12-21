@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <link rel="shortcut icon" href="images/icon.png">
+
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>ECHO</title>
+    <style>
+
+      html {
+        height: 100%;
+        margin-bottom: 10%;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      body {
+        height: 100%;
+        margin-bottom: 10%;
+        padding: 0;
+        overflow: hidden;
+        font-family: Tahoma, Verdana, Segoe, sans-serif;
+        font-size: 12pt;
+      }
+      /* 
+
+      JEVON MAHONEY
+      MATT JAMES
+      ECHO
+      27/11/16
+       */
+
+/*SLIDER BEGIN - - - - - - - - - - - - - - - - 
+*/
+
+     a, ul, li {
+            -o-transition:.5s;
+            -ms-transition:.5s;
+            -moz-transition:.5s;
+            -webkit-transition:.5s;
+        }
+
+        * {
+  margin:0;
+  padding:0;
+  font-family: Tahoma, Verdana, Segoe, sans-serif;
+  word-spacing:-2px;
+}
+
+.slider {
+  overflow-y: hidden;
+  max-height: 500px; /* approximate max height */
+  transition-property: all;
+  transition-duration: .5s;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.slider.closed {
+  max-height: 0;
+}
+
+* {
+  margin:0;
+  padding:0;
+  letter-spacing:3px;
+}
+
+.message {
+background:#fff;
+color:#000;
+position: absolute;
+top: -100%;
+left: 0;
+width: 100%;
+height: 100%;
+transition: top 300ms cubic-bezier(0.17, 0.04,0.03, 0.94);
+overflow: hidden;
+box-sizing: border-box;
+text-align: center;
+z-index: 1;
+}
+
+.message h1 {
+  color:#FFF;
+}
+
+#toggle {
+  position:absolute;
+  appearance:none;
+  cursor:pointer;
+  left:-100%;
+  top:-100%;
+}
+
+#toggle + label {
+  position:absolute;
+  cursor:pointer;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #87BCD1;
+  width: 100%;
+  border-radius: 0px;
+  color: #FFF;
+  line-height:100%;
+  font-size:20px;
+  text-align:center;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  transition:all 500ms ease;
+  z-index: 2;
+  float: right;
+}
+
+#toggle + label:hover{
+  background-color: #ffb739;
+  transition: 200ms;
+  color: #000;
+}
+
+#toggle + label:after {
+  content:"+" 
+}
+
+.container {
+transition: margin 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
+height: 36px;
+background-color: #000;
+}
+
+#toggle:checked ~ .message {
+  top: 0;
+}
+
+#toggle:checked ~ .container {
+  
+}
+
+#toggle:checked + label {
+  background:#ffb739;
+  color: #000;
+  transition: 200ms;
+}
+
+#toggle:checked + label:after {
+  content:"-"
+}
+
+.innermessage{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 250px;
+  overflow: scroll;
+  background-color: #fff;
+}
+
+.innermessage a {
+  color: #000;
+  text-decoration: none;
+  width: 100%;
+  display: block;
+  background-color: #fff;
+}
+
+.innermessage a:hover{
+color: #87BCD1;
+}
+
+.imageplace{
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 10px;
+  left:0;
+  right: 0;
+}
+
+.footer{
+  position: absolute;
+  bottom: 0;
+  left:0;
+  right: 0;
+  font-size: 9pt;
+  margin-left: 5%;
+  z-index: -1;
+  line-height: 20px;
+  margin-bottom: 5px;
+}
+
+/*
+SLIDER END - - - - - - - - - - - - - - - - - - -
+*/
+
+#map {
+     height: 200%;
+     width: 100%;
+     -webkit-transform: perspective(1000px) rotate3d(100, 1, 0, 50deg)!important;
+     -moz-transform: perspective(1000px) rotate3d(100, 1, 0, 50deg)!important;
+     -o-transform: perspective(1000px) rotate3d(100, 1, 0, 50deg)!important;
+     transform: perspective(1000px) rotate3d(100, 1, 0, 50deg)!important;
+     overflow: hidden;
+     top: -100%;
+ }
+
+    </style>
+
+  </head>
+  
+  <body>
+<div id="container">
+<input type="checkbox" name="toggle" id="toggle" />
+<label for="toggle"></label>
+<div class="container">
+</div>
+  
+<div class="message">
+
+<ul class="slides">
+
+    <li class="slide-container">
+    <div class="slide">
+      
+<div class="innermessage">
+
+<a href="/">Home</a>
+
+<br/><br>
+
+<a href="/portfolio.html">Portfolio</a>
+
+<br/><br>
+
+<a href="https://jevonma.wordpress.com/">Thesis</a>
+
+</div>
+    </div>  
+</li>
+    </li>
+</ul>
+
+</nav>
+
+</div>
+</div>
+</div>
+
+<div id="map"></div>
+    <script>
+
+function initMap() {
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 53.234447, lng: -0.536250},
+          zoom: 17,
+
+          //center: {lat: 53.234447, lng: -0.536250},
+         
+          styles: [
+            {elementType: 'geometry', stylers: [{color: '#F1F1F1'}]},
+            {elementType: 'labels.text.stroke', stylers: [{color: '#fff'}]},
+            {elementType: 'labels.text.fill', stylers: [{color: '#fff'}]
+          },
+
+            {
+              featureType: 'administrative.locality',
+              elementType: 'labels.text.fill',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'poi',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#fff'}]
+            },
+            {
+            featureType: "poi", 
+            elementType: "labels", 
+            stylers: [ { visibility: "off" } ] 
+            },
+            {
+              featureType: 'poi.park',
+              elementType: 'geometry',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'poi.park',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#fff'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'geometry',
+              stylers: [{color: '#ffb739'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'geometry.stroke',
+              stylers: [{color: '#ffb739'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'labels.text.fill',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'road.highway',
+              elementType: 'geometry',
+              stylers: [{color: '#ffb739'}]
+            },
+            {
+              featureType: 'road.highway',
+              elementType: 'geometry.stroke',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'road.highway',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#000000'}]
+            },
+             {
+              featureType: 'transit',
+              elementType: 'labels',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'transit',
+              elementType: 'geometry',
+              stylers: [{color: '#BFBFBF'}]
+            },
+            {
+              featureType: 'transit.station',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#fff'}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'geometry',
+              stylers: [{color: '#dbe8f9'}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#fff'}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'labels.text.stroke',
+              stylers: [{color: '#fff'}]
+            },
+            ]
+
+            //END OF MAP STYLES
+
+        });
+
+if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('Location found.');
+            map.setCenter(pos);
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+      }
+
+      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.');
+
+    }
+
+    </script>
+
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALCh6bey5CW-HwnPLeOB08Kj-2zU5i_fA&callback=initMap&callback=initMap">
+    </script>
+
+  </body>
+</html>

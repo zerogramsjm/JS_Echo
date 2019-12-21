@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+  <link rel="shortcut icon" href="images/icon2.png">
+
+    <title>ECHO</title>
+
+    <script src="js/MediaStreamRecorder.js"></script>
+
+    <script src="https://cdn.WebRTC-Experiment.com/gumadapter.js"></script>
+
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+
+      html {
+        height: 100%;
+        margin-bottom: 10%;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      body {
+        height: 100%;
+        margin-bottom: 10%;
+        padding: 0;
+        overflow: hidden;
+        font-family: Tahoma, Verdana, Segoe, sans-serif;
+        font-size: 12pt;
+      }
+
+      /* 
+
+      JEVON MAHONEY
+      MATT JAMES
+      ECHO
+      27/11/16
+       */
+
+/*SLIDER BEGIN - - - - - - - - - - - - - - - - 
+*/
+
+     a, ul, li {
+            -o-transition:.5s;
+            -ms-transition:.5s;
+            -moz-transition:.5s;
+            -webkit-transition:.5s;
+        }
+
+        * {
+  margin:0;
+  padding:0;
+  font-family: Tahoma, Verdana, Segoe, sans-serif;
+  word-spacing:-2px;
+}
+
+.slider {
+  overflow-y: hidden;
+  max-height: 500px; /* approximate max height */
+  transition-property: all;
+  transition-duration: .5s;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.slider.closed {
+  max-height: 0;
+}
+
+* {
+  margin:0;
+  padding:0;
+  letter-spacing:3px;
+}
+
+.message {
+background:#fff;
+color:#000;
+position: absolute;
+top: -100%;
+left: 0;
+width: 100%;
+height: 100%;
+transition: top 300ms cubic-bezier(0.17, 0.04,0.03, 0.94);
+overflow: hidden;
+box-sizing: border-box;
+text-align: center;
+z-index: 2;
+}
+
+.message h1 {
+  color:#FFF;
+}
+
+#toggle {
+  position:absolute;
+  appearance:none;
+  cursor:pointer;
+  left:-100%;
+  top:-100%;
+}
+
+#toggle + label {
+  position:absolute;
+  cursor:pointer;
+  padding-top: 7px;
+  padding-bottom: 15px;
+  background: #87BCD1;
+  width: 100%;
+  border-radius: 0px;
+  color: #FFF;
+  line-height:100%;
+  font-size:26px;
+  text-align:center;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  transition:all 500ms ease;
+  z-index: 2;
+  float: right;
+  height: 20px;
+}
+
+#toggle + label:hover{
+  background-color: #ffb739;
+  transition: 200ms;
+  color: #ffb739;
+}
+
+#toggle + label:after {
+    content:"◉"
+}
+
+.container {
+transition: margin 300ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
+height: 36px;
+background-color: #000;
+}
+
+#toggle:checked ~ .message {
+  top: 0;
+}
+
+#toggle:checked ~ .container {
+  
+}
+
+#toggle:checked + label {
+  background:#ffb739;
+  color: #000;
+  transition: 200ms;
+  z-index: 3;
+}
+
+#toggle:checked + label:after {
+  content:""
+}
+
+.innermessage{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  overflow: scroll;
+  background-color: #fff;
+}
+
+.innermessage a {
+  color: #000;
+  text-decoration: none;
+  width: 100%;
+  display: block;
+  background-color: #fff;
+}
+
+.innermessage a:hover{
+color: #87BCD1;
+}
+
+.imageplace{
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 10px;
+  left:0;
+  right: 0;
+}
+
+#footer {
+    position:fixed;
+    bottom:0;
+    height: 45px;
+    background-color: #000;
+    z-index: -2;
+    width: 100%;
+    color: #fff;
+    text-align: center;
+}
+
+      #map {
+
+     height: 120%;
+     width: 120%;
+
+      }
+
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+
+/*BUTTON - - - - - - - - - - - - - - - - 
+*/
+
+.button {
+position:absolute;
+cursor:pointer;
+padding:10px;
+font-size: 26px;
+background: #fff;
+width: 100%;
+border-radius: 0px;
+padding: 8px 10px;
+color: #ff0000;
+line-height:100%;
+text-align:center;
+-webkit-font-smoothing: antialiased;
+cursor: pointer;
+float: right;
+right: 0;
+bottom: 0;
+text-decoration: none;
+z-index: 1;
+}
+
+.button:hover{
+  background: #ff0000;
+  color: #ff0000;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000;
+  transition: opacity 400ms;
+  visibility: hidden;
+  opacity: 0;
+  z-index: 0;
+}
+
+.overlay:target {
+  visibility: visible;
+  opacity: 1;
+  z-index: 1;
+}
+
+.popup {
+  color: #000;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 0px;
+  width: 100%;
+  transition: all 1s ease-in-out;
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 0;
+}
+
+.popup a:hover{
+color: #ff0000;
+background-color: #fff;
+}
+
+.popup .close {
+position:absolute;
+cursor:pointer;
+padding:10px;
+background: #ff0000;
+width: 100%;
+border-radius: 0px;
+padding: 8px 10px;
+color: #ff0000;
+line-height:100%;
+font-size:26px;
+text-align:center;
+-webkit-font-smoothing: antialiased;
+cursor: pointer;
+float: right;
+right: 0;
+bottom: 0;
+text-decoration: none;
+z-index: 0;
+transition: all 1s ease-in-out;
+}
+
+.popup .close:hover {
+  color: #ff0000;
+  background-color: #ff0000;
+  transition: all 1s ease-in-out;
+}
+
+.popup .content {
+  background: rgba(255, 255, 255, 1);
+  position: absolute;
+  overflow: auto;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  line-height: 200%;
+  font-family: Tahoma, Verdana, Segoe, sans-serif;
+  font-size: 12pt;
+  width: 100%;
+}
+
+.popup .button {
+    background-color: #fff;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.popup .button1 {
+    background-color: #fff;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+    </style>
+
+  </head>
+  <body>
+
+  <div id="footer">
+    
+    <button id="pause-recording" disabled>I</button>
+
+            <button id="resume-recording" disabled>I</button>
+
+            <button id="save-recording" disabled>I</button>
+
+            <section class="experiment" style="padding: 5px;">
+
+            <label for="time-interval">.</label>
+            
+            <input type="text" id="time-interval" value="100000">ms
+
+            <br>
+            <br> 
+
+            <select id="audio-recorderType" style="font-size:12px;vertical-align: middle;margin-right: 51px;">
+                <option>[Best Available Recorder]</option>
+                <option>MediaRecorder API</option>
+                <option>WebAudio API (WAV)</option>
+                <option>WebAudio API (PCM)</option>
+            </select>
+            <br>
+
+            <input id="left-channel" type="checkbox" checked style="width:auto;">
+            <label for="left-channel">MONO</label>
+
+  </div>
+
+  <a class="button" id="start-recording" href="#popup1">◉</a>
+
+</div>
+<div id="popup1" class="overlay">
+<div class="popup">
+    
+<a class="close" href="#">-</a>
+
+<div class="content"> 
+
+<div id="content">
+
+            <a href="#popup1" class="button1" id="stop-recording" enabled>STOP</a>
+
+            <br/><br/>
+
+            <a href="#" class="button1" id="geo" enabled>PLACE</a>
+
+</br></br>
+
+</div></div></div></div></div></div>
+
+</ul>
+</p>
+
+<div id="container">
+<input type="checkbox" name="toggle" id="toggle" />
+<label for="toggle"></label>
+<div class="container">
+</div>
+  
+<div class="message">
+
+<ul class="slides">
+
+    <li class="slide-container">
+    <div class="slide">
+      
+<div class="innermessage">
+
+<a href="/echo/about.html">ABOUT</a>
+
+<br/><br/>
+
+<a href="/echo/map.html">
+
+<img src="images/icon2.png" width="40px" height="auto">
+
+</a>
+
+<br/><br>
+
+ECHOS
+
+             <section class="experiment">
+             <div id="audios-container"></div>
+        </section>
+
+</br></br>
+
+</div>
+    </div>  
+</li>
+    </li>
+</ul>
+
+</nav>
+
+</div>
+</div>
+</div>
+
+        <script>
+            function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
+                navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
+            }
+            var mediaConstraints = {
+                audio: true
+            };
+            document.querySelector('#start-recording').onclick = function() {
+                this.disabled = true;
+                captureUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+            };
+            document.querySelector('#stop-recording').onclick = function() {
+                this.disabled = true;
+                mediaRecorder.stop();
+                mediaRecorder.stream.stop();
+
+                document.querySelector('#pause-recording').disabled = true;
+                document.querySelector('#start-recording').disabled = false;
+
+
+//stop record function
+
+
+            };
+
+            document.querySelector('#pause-recording').onclick = function() {
+                this.disabled = true;
+                mediaRecorder.pause();
+                document.querySelector('#resume-recording').disabled = false;
+            };
+            document.querySelector('#resume-recording').onclick = function() {
+                this.disabled = true;
+                mediaRecorder.resume();
+                document.querySelector('#pause-recording').disabled = false;
+            };
+            document.querySelector('#save-recording').onclick = function() {
+                this.disabled = true;
+                mediaRecorder.save();
+                // alert('Drop WebM file on Chrome or Firefox. Both can play entire file. VLC player or other players may not work.');
+            };
+            var mediaRecorder;
+
+// - - - - - - - - - - - - - - - - - - -
+
+//AUDIOCONTAINER FUNCTION - - - - - - -
+
+// - - - - - - - - - - - - - - - - - - -
+
+            function onMediaSuccess(stream) {
+                var audio = document.createElement('audio');
+                audio = mergeProps(audio, {
+                    controls: true,
+                    muted: true,
+                    src: URL.createObjectURL(stream)
+                });
+                audio.play();
+                audiosContainer.appendChild(audio);
+                audiosContainer.appendChild(document.createElement('hr'));
+                mediaRecorder = new MediaStreamRecorder(stream);
+                mediaRecorder.stream = stream;
+                var recorderType = document.getElementById('audio-recorderType').value;
+                if (recorderType === 'MediaRecorder API') {
+                    mediaRecorder.recorderType = MediaRecorderWrapper;
+                }
+                if (recorderType === 'WebAudio API (WAV)') {
+                    mediaRecorder.recorderType = StereoAudioRecorder;
+                    mediaRecorder.mimeType = 'audio/wav';
+                }
+                if (recorderType === 'WebAudio API (PCM)') {
+                    mediaRecorder.recorderType = StereoAudioRecorder;
+                    mediaRecorder.mimeType = 'audio/pcm';
+                }
+                // don't force any mimeType; use above "recorderType" instead.
+                // mediaRecorder.mimeType = 'audio/webm'; // audio/ogg or audio/wav or audio/webm
+                mediaRecorder.audioChannels = !!document.getElementById('left-channel').checked ? 1 : 2;
+                mediaRecorder.ondataavailable = function(blob) {
+                    var a = document.createElement('a');
+                    a.target = '_blank';
+                    a.innerHTML = 'ECHO ' + (index++);
+                    a.href = URL.createObjectURL(blob);
+                    audiosContainer.appendChild(a);
+                    audiosContainer.appendChild(document.createElement('hr'));
+                };
+                var timeInterval = document.querySelector('#time-interval').value;
+                if (timeInterval) timeInterval = parseInt(timeInterval);
+                else timeInterval = 5 * 1000;
+                // get blob after specific time interval
+                mediaRecorder.start(timeInterval);
+                document.querySelector('#stop-recording').disabled = false;
+                document.querySelector('#pause-recording').disabled = false;
+                document.querySelector('#save-recording').disabled = false;
+            }
+            function onMediaError(e) {
+                console.error('media error', e);
+            }
+            var audiosContainer = document.getElementById('audios-container');
+            var index = 1;
+            // below function via: http://goo.gl/B3ae8c
+            function bytesToSize(bytes) {
+                var k = 1000;
+                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                if (bytes === 0) return '0 Bytes';
+                var i = parseInt(Math.floor(Math.log(bytes) / Math.log(k)), 10);
+                return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+            }
+            // below function via: http://goo.gl/6QNDcI
+            function getTimeLength(milliseconds) {
+                var data = new Date(milliseconds);
+                return data.getUTCHours() + " hours, " + data.getUTCMinutes() + " minutes and " + data.getUTCSeconds() + " second(s)";
+            }
+            window.onbeforeunload = function() {
+                document.querySelector('#start-recording').disabled = false;
+            };
+        </script>
+
+
+</pre>
+</article>
+
+</div>
+
+    <div id="map"></div>
+
+    <script>
+      // Note: This example requires that you consent to location sharing when
+      // prompted by your browser. If you see the error "The Geolocation service
+      // failed.", it means you probably did not give permission for the browser to
+      // locate you.
+
+      var labels = '.';
+      var labelIndex = 0;
+
+      // - - - - - - - - - - - - - - - - - - 
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 53.234447, lng: -0.536250},
+          zoom: 17,
+        disableDefaultUI: true, 
+        mapTypeControl: false,
+        scaleControl: false,
+        zoomControl: false,
+        rotateControl: true,
+        scrollwheel: true,
+styles: [
+            {elementType: 'geometry', stylers: [{color: '#F1F1F1'}]},
+            {elementType: 'labels.text.stroke', stylers: [{color: '#fff'}]},
+            {elementType: 'labels.text.fill', stylers: [{color: '#fff'}]
+          },
+
+            {
+              featureType: 'administrative.locality',
+              elementType: 'labels.text.fill',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'poi',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#fff'}]
+            },
+            {
+            featureType: "poi", 
+            elementType: "labels", 
+            stylers: [ { visibility: "off" } ] 
+            },
+            {
+              featureType: 'poi.park',
+              elementType: 'geometry',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'poi.park',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#fff'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'geometry',
+              stylers: [{color: '#f6bc01'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'geometry.stroke',
+              stylers: [{color: '#f6bc01'}]
+            },
+            {
+              featureType: 'road',
+              elementType: 'labels.text.fill',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'road.highway',
+              elementType: 'geometry',
+              stylers: [{color: '#f6bc01'}]
+            },
+            {
+              featureType: 'road.highway',
+              elementType: 'geometry.stroke',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'road.highway',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#000000'}]
+            },
+             {
+              featureType: 'transit',
+              elementType: 'labels',
+              stylers: [{ visibility: "off" }]
+            },
+            {
+              featureType: 'transit',
+              elementType: 'geometry',
+              stylers: [{color: '#BFBFBF'}]
+            },
+            {
+              featureType: 'transit.station',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#fff'}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'geometry',
+              stylers: [{color: '#dbe8f9'}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'labels.text.fill',
+              stylers: [{color: '#fff'}]
+            },
+            {
+              featureType: 'water',
+              elementType: 'labels.text.stroke',
+              stylers: [{color: '#fff'}]
+            },
+            ]
+
+        });
+
+        //MARKER
+
+        document.querySelector('#geo').onclick = function() {
+
+            	addMarker(event.latLng, map);
+
+            };
+
+        // Add a marker at the center of the map.
+        addMarker(bangalore, map);
+      }
+
+      // Adds a marker to the map.
+      function addMarker(location1, map) {
+        // Add the marker at the clicked location, and add the next-available label
+        // from the array of alphabetical characters.
+        var image = 'images/markers.gif';
+
+        var marker = new google.maps.Marker({
+          position: location1,
+          label: labels[labelIndex++ % labels.length],
+          map: map,
+          icon: image
+        });
+
+      //GEOLOCATION
+
+      var content = document.createElement('div');
+      var div = document.createElement('div');
+      div.id = "c_050e3e9d159498c53e6f88b44fad6987";
+      div.class = "normal";
+      content.appendChild(div);
+
+      var a = document.createElement("a");
+      a.target="_blank";
+
+      // LINK FOR TEXTAREA
+
+a.href = url;
+
+      // LINK FOR TEXTAREA
+
+      a.style.color = "#000000";
+      a.style.textDecoration = "none";
+      a.style.font = "bold 13px/1.2 Verdana";
+      a.innerText = "ECHO" + (index++);
+      div.appendChild(a);
+
+      // - - - - - -
+
+        var infoWindow = new google.maps.InfoWindow({map: map
+          , content: content});
+
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            infoWindow.setPosition(pos);
+
+            infoWindow.content('')
+
+            // - - - - - - - -  - - - - - - -
+
+            map.setCenter(pos);
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+      }
+
+      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                              'Error' :
+                              'Error: Your browser doesn\'t support geolocation.');
+      }
+
+       google.maps.event.addListener(map, 'click', function(event) {
+          addMarker(event.latLng, map);
+        });
+
+       // SOUND
+
+       function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
+                navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
+            }
+            var mediaConstraints = {
+                audio: true
+            };
+
+            document.querySelector('#start-recording').onclick = function() {
+                this.disabled = true;
+                captureUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+            };
+
+            document.querySelector('#stop-recording').onclick = function() {
+                this.disabled = true;
+                mediaRecorder.stop();
+                mediaRecorder.stream.stop();
+                document.querySelector('#pause-recording').disabled = true;
+                document.querySelector('#start-recording').disabled = false;
+            };
+            document.querySelector('#pause-recording').onclick = function() {
+                this.disabled = true;
+                mediaRecorder.pause();
+                document.querySelector('#resume-recording').disabled = false;
+            };
+            document.querySelector('#resume-recording').onclick = function() {
+                this.disabled = true;
+                mediaRecorder.resume();
+                document.querySelector('#pause-recording').disabled = false;
+            };
+            document.querySelector('#save-recording').onclick = function() {
+                this.disabled = true;
+                mediaRecorder.save();
+                // alert('Drop WebM file on Chrome or Firefox. Both can play entire file. VLC player or other players may not work.');
+            };
+
+            var mediaRecorder;
+
+//AUDIO CONTAINER FUNCTION / / / / / / / / - - - -
+
+            var url;
+
+            function onMediaSuccess(stream) {
+                var audio = document.createElement('audio');
+                audio = mergeProps(audio, {
+                    controls: true,
+                    muted: true,
+                    src: URL.createObjectURL(stream)
+                });
+                audio.play();
+                audiosContainer.appendChild(audio);
+                audiosContainer.appendChild(document.createElement('hr'));
+                mediaRecorder = new MediaStreamRecorder(stream);
+                mediaRecorder.stream = stream;
+                var recorderType = document.getElementById('audio-recorderType').value;
+                if (recorderType === 'MediaRecorder API') {
+                    mediaRecorder.recorderType = MediaRecorderWrapper;
+                }
+                if (recorderType === 'WebAudio API (WAV)') {
+                    mediaRecorder.recorderType = StereoAudioRecorder;
+                    mediaRecorder.mimeType = 'audio/wav';
+                }
+                if (recorderType === 'WebAudio API (PCM)') {
+                    mediaRecorder.recorderType = StereoAudioRecorder;
+                    mediaRecorder.mimeType = 'audio/pcm';
+                }
+
+//AUDIO CONTAINER  - - - - - - - - - - - - 
+
+//AUDIO CONTAINER  - - - - - - - - - - - - 
+
+//AUDIO CONTAINER  - - - - - - - - - - - - 
+
+                mediaRecorder.audioChannels = !!document.getElementById('left-channel').checked ? 1 : 2;
+                
+                mediaRecorder.ondataavailable = function(blob) {
+                    var a = document.createElement('a');
+                    a.target = '_blank';
+                    a.innerHTML = 'ECHO' + (index++);
+
+                    url = URL.createObjectURL(blob);
+
+                    a.href = url;
+
+                    audiosContainer.appendChild(a);
+                    audiosContainer.appendChild(document.createElement('hr'));
+
+                    if (true) {}
+
+                };
+                var timeInterval = document.querySelector('#time-interval').value;
+                if (timeInterval) timeInterval = parseInt(timeInterval);
+                else timeInterval = 5 * 1000;
+                // get blob after specific time interval
+                mediaRecorder.start(timeInterval);
+                document.querySelector('#stop-recording').disabled = false;
+                document.querySelector('#pause-recording').disabled = false;
+                document.querySelector('#save-recording').disabled = false;
+            }
+            function onMediaError(e) {
+                console.error('media error', e);
+            }
+            var audiosContainer = document.getElementById('audios-container');
+            var index = 1;
+            // below function via: http://goo.gl/B3ae8c
+            function bytesToSize(bytes) {
+                var k = 1000;
+                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                if (bytes === 0) return '0 Bytes';
+                var i = parseInt(Math.floor(Math.log(bytes) / Math.log(k)), 10);
+                return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+            }
+            // below function via: http://goo.gl/6QNDcI
+            function getTimeLength(milliseconds) {
+                var data = new Date(milliseconds);
+                return data.getUTCHours() + " hours, " + data.getUTCMinutes() + " minutes and " + data.getUTCSeconds() + " second(s)";
+            }
+            window.onbeforeunload = function() {
+                document.querySelector('#start-recording').disabled = false;
+            };
+
+            $("#button").click(function() {
+  $('.transform').toggleClass('transform-active');
+});
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXXmczWhaifq1e9D9LwEDR2xmpVqMUT20&callback=initMap&callback=initMap">
+    </script>
+
+</body>
+</html>
+
